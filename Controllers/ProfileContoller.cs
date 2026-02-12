@@ -1,43 +1,38 @@
 ﻿using CONTACTS.Models;
-using CONTACTS.Controllers;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CONTACTS.Controllers
 {
     public class ProfileController
     {
-        public Profile[] profiles;
+        private List<Profile> profiles;
 
         public ProfileController()
         {
-            this.profiles = new Profile[1];
+            this.profiles = new List<Profile>();
         }
 
-        public Profile[] Getprofiles()
+        public List<Profile> GetProfiles()
         {
             return this.profiles;
         }
 
-        public void ShowAllprofiles()
+        public void ShowAllProfiles()
         {
-            if (this.profiles.Length == 1 && this.profiles[0] == null)
+            if (this.profiles.Count == 0)
             {
                 Console.WriteLine("There is no profile!");
             }
             else
             {
-                foreach (Profile profile in this.profiles)
+                for (int i = 0; i < this.profiles.Count; i++)
                 {
-                    if (profile == null)
-                    {
-                        continue;
-                    }
+                    Profile profile = this.profiles[i];
 
                     Console.WriteLine(
-                        $"Profile -> {Array.IndexOf(this.profiles, profile) + 1}\n" +
+                        $"Profile -> {i + 1}\n" +
                         $"Name: {profile.nickname}\n" +
                         $"Password: {profile.password}\n" +
                         $"====================");
@@ -45,24 +40,21 @@ namespace CONTACTS.Controllers
             }
         }
 
-        public void Addprofile(Profile profile)
+        public void AddProfile(Profile profile)
         {
-            if (CheckProfileData(profile.nickname, profile.password)&& CheckProfileUniqueness(profile.nickname,profile.password))
+            if (CheckProfileData(profile.nickname, profile.password) &&
+                CheckProfileUniqueness(profile.nickname, profile.password))
             {
-                this.profiles[this.profiles.Length - 1] = profile;
-
-                Array.Resize(ref this.profiles, this.profiles.Length + 1);
+                this.profiles.Add(profile);
             }
         }
 
-        public void Addprofile(string nickname, string password, Contact[] Contacts)
+        public void AddProfile(string nickname, string password, Contact[] contacts)
         {
-            if (CheckProfileData(nickname, password)&& CheckProfileUniqueness(nickname,password))
+            if (CheckProfileData(nickname, password) &&
+                CheckProfileUniqueness(nickname, password))
             {
-                this.profiles[this.profiles.Length - 1] =
-                            new Profile(nickname, password,Contacts);
-
-                Array.Resize(ref this.profiles, this.profiles.Length + 1);
+                this.profiles.Add(new Profile(nickname, password, contacts));
             }
         }
 
@@ -75,19 +67,15 @@ namespace CONTACTS.Controllers
                 {
                     return profile;
                 }
-                else
-                {
-                    Console.WriteLine("Daxil olunan melumatlar uzre istifadeci tapilmadi!");
-                }
             }
 
+            Console.WriteLine("Daxil olunan melumatlar uzre istifadeci tapilmadi!");
             return null;
         }
 
-        
         public bool CheckProfileId(int profileId)
         {
-            if (profileId <= 0 || profileId > this.profiles.Length)
+            if (profileId <= 0 || profileId > this.profiles.Count)
             {
                 Console.WriteLine("Daxil edilen ID yalnisdir!");
                 return false;
@@ -105,9 +93,9 @@ namespace CONTACTS.Controllers
 
         private bool CheckProfileData(string nickname, string password)
         {
-            if (Regex.IsMatch(nickname, @"^[A-Za-z]{6,}$")) 
+            if (Regex.IsMatch(nickname, @"^[A-Za-z]{6,}$"))
             {
-                if (Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{4,}$")) 
+                if (Regex.IsMatch(password, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).{4,}$"))
                 {
                     return true;
                 }
@@ -122,16 +110,12 @@ namespace CONTACTS.Controllers
                 Console.WriteLine("Daxil edilen profil adi standartlara uygun deyil!");
                 return false;
             }
-
-            
         }
+
         private bool CheckProfileUniqueness(string nickname, string password)
         {
             foreach (Profile profile in this.profiles)
             {
-                if (profile == null)
-                    continue;
-
                 if (profile.nickname.ToLower() == nickname.ToLower())
                 {
                     Console.WriteLine("Bu nickname artiq istifade olunur!");
@@ -147,7 +131,5 @@ namespace CONTACTS.Controllers
 
             return true;
         }
-
     }
 }
-

@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <StartupObject>Var.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
